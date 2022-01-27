@@ -16,14 +16,14 @@ int  find(char* table, char k) {
 
 void b58encode(char* src) {
 	int  i = 0, j, tmp;
-	int len = 138 * strlen(src) / 100 + 1;								 // 8 / log2(58)
+	int len = 138 * strlen(src) / 100 + 1;	 // 8 / log2(58)
 
 	uint8_t* enc = (uint8_t*)malloc(len * sizeof(uint8_t));   //以unsigned int8 来运算 char的范围 -128~127
 	memset(enc, 0, len * sizeof(uint8_t));
 
 	while (i < strlen(src)) {
 		tmp = src[i];
-		for (j = len - 1;j>=0 ; j--) {													//大端序 从低位修改进位改变enc的状态，做到大数进制转换。
+		for (j = len - 1;j>=0 ; j--) {	//大端序 从低位修改进位改变enc的状态，做到大数进制转换。
 			tmp += 256 * enc[j];
 			enc[j] = tmp % 58;
 			tmp = tmp / 58;
