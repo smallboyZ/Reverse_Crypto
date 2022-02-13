@@ -27,24 +27,24 @@ void XXTea_Encrypt(ut32* src, ut32 n, ut32* key) {
 }
 
 void XXTea_Decrypt(ut32* enc, ut32 n, ut32* key) {
-	ut32 y, z, sum;
-	ut32 e, rounds;
-	int p;
-	rounds = 6 + 52 / n;
-	sum = delta * rounds;
+    ut32 y, z, sum;
+    ut32 e, rounds;
+    int p;
+    rounds = 6 + 52 / n;
+    sum = delta * rounds;
 
-	do {
-		z = enc[n - 2];
-		e = (sum >> 2) & 3;
-		y = enc[0];
-		enc[n - 1] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[((n - 1) & 3) ^ e] ^ z)));
-		for (p = n - 2; p >= 0; p--) {
-			y = enc[p + 1];
-			z = enc[(p - 1) % n]; //注意如果p是ut32 p-1不可能为负数
-			enc[p] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z)));
-		}
-		sum -= delta;
-	} while (--rounds);
+    do {
+        e = (sum >> 2) & 3;
+        for (p = n - 1; p > 0; p--) {
+            y = enc[(p + 1)%n];
+            z = enc[(p - 1)]; 
+            enc[p] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z)));
+        }
+        y = enc[1];
+        z = enc[n - 1];
+        enc[0] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(0 & 3) ^ e] ^ z)));
+        sum -= delta;
+    } while (--rounds);
 
 }
 
