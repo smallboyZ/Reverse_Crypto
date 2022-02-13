@@ -34,11 +34,14 @@ void XXTea_Decrypt(ut32* enc, ut32 n, ut32* key) {
 	do {
 		e = (sum >> 2) & 3;
 
-		for (p = n - 1; p >= 0; p--) {
-			y = enc[(p + 1)%n];
-			z = enc[(p - 1) % n]; //注意如果p是ut32 p-1不可能为负数
+		for (p = n - 1; p > 0; p--) {
+			y = enc[(p + 1) % n];
+			z = enc[(p - 1) % n]; 
 			enc[p] -= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z)));
 		}
+		y = enc[1];
+		z = enc[n - 1];
+		enc[p]-= (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3) ^ e] ^ z)));
 		sum -= delta;
 	} while (--rounds);
 
