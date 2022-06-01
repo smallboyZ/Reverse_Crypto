@@ -27,7 +27,7 @@ void Rc4_Encrypt(uint8_t* m, uint32_t mlen) {
 	while (p < mlen) {
 		i = (i + 1) % 256;
 		j = (j + s[i]) % 256;
-		swap(&s[i], &s[i]);
+		swap(&s[i], &s[j]);
 		k = s[(s[i] + s[j]) % 256];
 		m[p] ^= k;
 		p++;
